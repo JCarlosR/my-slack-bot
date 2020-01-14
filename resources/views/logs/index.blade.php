@@ -22,7 +22,9 @@
                         @foreach ($requests as $request)
                             <tr>
                                 <td>{{ $request->request_url }}</td>
-                                <td>{{ $request->request_content }}</td>
+                                <td>
+                                    <pre>{{ $request->pretty_request_content }}</pre>
+                                </td>
                                 <td>{{ $request->request_method }}</td>
                                 <td>{{ $request->response }}</td>
                                 <td>{{ $request->created_at }}</td>
