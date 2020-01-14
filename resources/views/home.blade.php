@@ -14,7 +14,10 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    <p>Opciones:</p>
+
+                    <a href="{{ url('logs') }}" class="btn btn-primary btn-block">Mensajes de Log (Slack)</a>
+                    <a href="{{ url('send') }}" class="btn btn-primary btn-block">Enviar mensajes (Impersonate)</a>
                 </div>
             </div>
         </div>
