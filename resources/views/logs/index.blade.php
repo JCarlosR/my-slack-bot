@@ -7,6 +7,8 @@
             <div class="card-header">HTTP Requests</div>
 
             <div class="card-body">
+                <p>Total captured requests: {{ $requests->total() }}</p>
+
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
@@ -32,6 +34,8 @@
                         @endforeach
                         </tbody>
                     </table>
+
+                    {{ $requests->links() }}
                 </div>
             </div>
         </div>
