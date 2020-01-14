@@ -27,7 +27,12 @@ class LogAfterRequest
             $event = $contentData->event;
             // dd($event);
 
-            if ($event->channel === env('TARGET_CHANNEL_ID')) {
+            $targetChannels = [
+                env('TARGET_CHANNEL_ID'),
+                env('IM_CHANNEL_ID'),
+            ];
+
+            if (in_array($event->channel, $targetChannels)) {
                 $this->storeRequest(
                     $request->fullUrl(),
                     $requestContent,
