@@ -35,14 +35,23 @@
                                 <td title="Channel Type: {{ $row->event_channel_type }}">
                                     {{ $row->event_channel }}
                                 </td>
-                                <td data-toggle="collapse" data-target="#event-message-{{ $row->id }}">
-                                    {{ $row->event_message_subtype }}
-                                </td>
-                                <td data-toggle="collapse" data-target="#event-previous-{{ $row->id }}">
-                                    {{ $row->previous_message_subtype }}
-                                </td>
+                                @if ($row->event_message_type)
+                                    <td data-toggle="collapse" data-target="#event-message-{{ $row->id }}">
+                                        {{ $row->event_message_subtype }}
+                                    </td>
+                                @else
+                                    <td>-</td>
+                                @endif
+                                @if ($row->previous_message_type)
+                                    <td data-toggle="collapse" data-target="#event-previous-{{ $row->id }}">
+                                        {{ $row->previous_message_subtype }}
+                                    </td>
+                                @else
+                                    <td>-</td>
+                                @endif
                                 <td>{{ $row->created_at }}</td>
                             </tr>
+                            @if ($row->event_message_type)
                             <tr id="event-message-{{ $row->id }}" class="collapse">
                                 <td colspan="9">
                                     <p><strong>Event Message</strong></p>
@@ -69,6 +78,8 @@
                                     </ul>
                                 </td>
                             </tr>
+                            @endif
+                            @if ($row->previous_message_type)
                             <tr id="event-previous-{{ $row->id }}" class="collapse">
                                 <td colspan="9">
                                     <strong>Event Previous Message</strong>
@@ -95,6 +106,7 @@
                                     </ul>
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         </tbody>
                     </table>
