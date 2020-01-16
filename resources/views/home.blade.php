@@ -17,6 +17,8 @@
                     <p>Opciones:</p>
 
                     <a href="{{ url('logs') }}" class="btn btn-primary btn-block">HTTP Request Logs</a>
+                    <a href="{{ url('events') }}" class="btn btn-primary btn-block">Slack Events</a>
+
                     <a href="{{ url('send/message') }}" class="btn btn-primary btn-block">Send message on behalf of the user</a>
                     <a href="{{ url('send/command') }}" class="btn btn-primary btn-block">Send command on behalf of the user</a>
                 </div>
