@@ -44,6 +44,10 @@ class SlackController extends Controller
             $event->bot_id = null;
         if (!isset($event->hidden))
             $event->hidden = null;
+        if (!isset($event->message))
+            $event->message = null;
+        if (!isset($event->previous_message))
+            $event->previous_message = null;
 
         $slackEventData = [
             'content' => $requestContent,
