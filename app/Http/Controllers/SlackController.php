@@ -43,7 +43,7 @@ class SlackController extends Controller
         if (!isset($event->bot_id))
             $event->bot_id = null;
         if (!isset($event->hidden))
-            $event->hidden = null;
+            $event->hidden = false;
         if (!isset($event->message))
             $event->message = null;
         if (!isset($event->previous_message))
