@@ -22,37 +22,7 @@ class LogAfterRequest
     public function terminate($request, $response)
     {
         if ($request->headers->get('Content-Type') == 'application/json') {
-            $requestContent = $request->getContent();
-            $contentData = json_decode($request->getContent());
-            $event = $contentData->event;
-            // dd($event);
-
-            $targetChannels = [
-                env('TARGET_CHANNEL_ID'),
-                env('IM_CHANNEL_ID'),
-            ];
-
-            if (in_array($event->channel, $targetChannels)) {
-                $this->storeRequest(
-                    $request->fullUrl(),
-                    $requestContent,
-                    $request->method(),
-                    $response->getContent()
-                );
-            }
+            HttpRequest::createFrom($request, $response);
         }
-    }
-
-    private function storeRequest(string $url, $content, string $method, $response)
-    {
-        $httpRequest = new HttpRequest();
-
-        $httpRequest->request_url = $url;
-        $httpRequest->request_content = $content;
-        $httpRequest->request_method = $method;
-
-        $httpRequest->response = $response;
-
-        $httpRequest->save();
     }
 }

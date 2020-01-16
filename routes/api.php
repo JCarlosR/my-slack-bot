@@ -1,4 +1,3 @@
 <?php
 
-Route::post('/slack', 'SlackController@action')
-    ->middleware('log_after');
+Route::post('/slack', 'SlackController@action')/*->middleware('log_after')*/;
