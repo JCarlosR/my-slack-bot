@@ -16,7 +16,11 @@ class SlackController extends Controller
         $requestContent = $request->getContent();
         $contentData = json_decode($requestContent);
 
-        $this->storeSlackEvent($requestContent, $contentData);
+        $slackEvent = $this->storeSlackEvent($requestContent, $contentData);
+
+        // acknowledge OpsGenie ticket when appropriate
+        if ($slackEvent)
+            $this->ackTicket($slackEvent);
 
         return $request->input('challenge');
     }
@@ -31,13 +35,15 @@ class SlackController extends Controller
         $event = $contentData->event;
 
         if (!in_array($event->channel, $targetChannels))
-            return;
+            return null;
 
         // sanitize no present properties
         if (!isset($event->text))
             $event->text = null;
         if (!isset($event->bot_id))
             $event->bot_id = null;
+        if (!isset($event->hidden))
+            $event->hidden = null;
 
         $slackEventData = [
             'content' => $requestContent,
@@ -108,6 +114,11 @@ class SlackController extends Controller
             }
         }
 
-        SlackEvent::create($slackEventData);
+        return SlackEvent::create($slackEventData);
+    }
+
+    private function ackTicket(SlackEvent $slackEvent)
+    {
+        // TODO: ack if convenient
     }
 }
