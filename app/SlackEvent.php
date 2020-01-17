@@ -65,4 +65,9 @@ class SlackEvent extends Model
         'previous_attachment_fields' => 'array',
         'previous_attachment_actions' => 'array'
     ];
+
+    public function getOpsGenieTicketNumber()
+    {
+        return null;
+    }
 }

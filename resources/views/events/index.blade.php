@@ -18,7 +18,7 @@
                             <th>Event Type</th>
                             <th>Event SubType</th>
                             <th>Event Ts</th>
-                            <th>Event Channel</th>
+                            <th>Channel</th>
                             <th>Event Message SubType</th>
                             <th>Previous Message SubType</th>
                             <th>Created At</th>

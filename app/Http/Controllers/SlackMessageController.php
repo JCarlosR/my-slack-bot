@@ -2,24 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Slack\ApiClient;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class SlackMessageController extends Controller
 {
-    private $client;
+    private $apiClient;
 
     public function __construct()
     {
-        $headers = [
-            'Authorization' => 'Bearer ' . env('SLACK_JWT_USER'),
-            'Content-Type' => 'application/json;charset=UTF-8'
-        ];
-
-        $this->client = new Client([
-            'base_uri' => 'https://slack.com/api/',
-            'headers' => $headers
-        ]);
+        $this->apiClient = new ApiClient();
     }
 
     public function newMessage()
@@ -29,13 +22,10 @@ class SlackMessageController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $response = $this->client->request('POST', 'chat.postMessage', [
-            'json' => [
-                'channel' => $request->input('channel'),
-                'text' => $request->input('text'),
-                'as_user' => true
-            ]
-        ]);
+        $response = $this->apiClient->postMessage(
+            $request->input('channel'),
+            $request->input('text')
+        );
 
         dd((string) $response->getBody());
     }
@@ -47,14 +37,11 @@ class SlackMessageController extends Controller
 
     public function sendCommand(Request $request)
     {
-        $response = $this->client->request('POST', 'chat.command', [
-            'json' => [
-                'channel' => $request->input('channel'),
-                'command' => $request->input('command'),
-                'text' => $request->input('text'),
-                'as_user' => true
-            ]
-        ]);
+        $response = $this->apiClient->postCommand(
+            $request->input('channel'),
+            $request->input('command'),
+            $request->input('text')
+        );
 
         dd((string) $response->getBody());
     }

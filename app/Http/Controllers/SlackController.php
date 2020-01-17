@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Slack\ApiClient;
 use App\SlackEvent;
 use Illuminate\Http\Request;
 
 class SlackController extends Controller
 {
+
+
     public function action(Request $request)
     {
         /*
@@ -19,10 +22,27 @@ class SlackController extends Controller
         $slackEvent = $this->storeSlackEvent($requestContent, $contentData);
 
         // acknowledge OpsGenie ticket when appropriate
-        if ($slackEvent)
+        if (env('ACK_OG_TICKETS', false) && $slackEvent)
             $this->ackTicket($slackEvent);
 
         return $request->input('challenge');
+    }
+
+    private function sanitizeAbsentProperties(&$object, $propertyNames)
+    {
+        foreach ($propertyNames as $propertyName) {
+            $object = $this->sanitizeAbsentProperty($object, $propertyName);
+        }
+
+        return $object;
+    }
+
+    private function sanitizeAbsentProperty(&$object, $propertyName, $defaultValue=null)
+    {
+        if (!isset($event->{$propertyName}))
+            $object->{$propertyName} = $defaultValue;
+
+        return $object;
     }
 
     private function storeSlackEvent($requestContent, $contentData)
@@ -38,16 +58,13 @@ class SlackController extends Controller
             return null;
 
         // sanitize no present properties
-        if (!isset($event->text))
-            $event->text = null;
-        if (!isset($event->bot_id))
-            $event->bot_id = null;
-        if (!isset($event->hidden))
-            $event->hidden = false;
-        if (!isset($event->message))
-            $event->message = null;
-        if (!isset($event->previous_message))
-            $event->previous_message = null;
+        $this->sanitizeAbsentProperties($event, [
+            'text',
+            'bot_id',
+            'message',
+            'previous_message'
+        ]);
+        $this->sanitizeAbsentProperty($event, 'hidden', false);
 
         $slackEventData = [
             'content' => $requestContent,
@@ -81,6 +98,10 @@ class SlackController extends Controller
             if (isset($event->message->attachments[0])) {
                 $messageAttachment = $event->message->attachments[0];
 
+                $this->sanitizeAbsentProperties($messageAttachment, [
+                   'text', 'footer', 'fields', 'actions'
+                ]);
+
                 $slackEventData += [
                     'message_attachment_fallback' => $messageAttachment->fallback,
                     'message_attachment_text' => $messageAttachment->text,
@@ -105,6 +126,10 @@ class SlackController extends Controller
             if (isset($event->previous_message->attachments[0])) {
                 $previousAttachment = $event->previous_message->attachments[0];
 
+                $this->sanitizeAbsentProperties($messageAttachment, [
+                    'author_name', 'text', 'fields', 'actions'
+                ]);
+
                 $slackEventData += [
                     'previous_attachment_author_name' => $previousAttachment->author_name,
                     'previous_attachment_fallback' => $previousAttachment->fallback,
@@ -123,6 +148,15 @@ class SlackController extends Controller
 
     private function ackTicket(SlackEvent $slackEvent)
     {
-        // TODO: ack if convenient
+        if ($slackEvent->event_subtype === 'bot_message') {
+            $ticketNumber = $slackEvent->getOpsGenieTicketNumber();
+
+            $slackApiClient = new ApiClient();
+            $slackApiClient->postCommand(
+                $slackEvent->event_channel,
+                '/genie',
+                "ack $ticketNumber"
+            );
+        }
     }
 }
