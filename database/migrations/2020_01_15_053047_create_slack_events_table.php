@@ -21,12 +21,12 @@ class CreateSlackEventsTable extends Migration
             $table->string('token');
             $table->string('team_id');
             $table->string('api_app_id');
-
             $table->string('type');
-            $table->string('event_id');
-            $table->string('event_time');
 
-            $table->string('event_type');
+            $table->string('event_id')->nullable();
+            $table->string('event_time')->nullable();
+
+            $table->string('event_type')->nullable();
             $table->string('event_subtype')->nullable();
             $table->boolean('event_hidden')->default(false);
             $table->text('event_text')->nullable();
