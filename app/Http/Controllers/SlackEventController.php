@@ -14,4 +14,9 @@ class SlackEventController extends Controller
 
         return view('events.index', compact('rows'));
     }
+
+    public function show(SlackEvent $slackEvent)
+    {
+        return view('events.show', compact('slackEvent'));
+    }
 }

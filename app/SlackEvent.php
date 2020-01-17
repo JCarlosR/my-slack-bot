@@ -66,6 +66,11 @@ class SlackEvent extends Model
         'previous_attachment_actions' => 'array'
     ];
 
+    public function getPrettyContentAttribute()
+    {
+        return json_encode(json_decode($this->content), JSON_PRETTY_PRINT);
+    }
+
     public function getOpsGenieTicketNumber()
     {
         return null;
