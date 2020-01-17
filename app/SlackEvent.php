@@ -19,6 +19,7 @@ class SlackEvent extends Model
 
         'event_type',
         'event_subtype',
+
         'event_hidden',
         'event_text',
         'event_ts',

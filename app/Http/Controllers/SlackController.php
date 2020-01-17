@@ -39,7 +39,7 @@ class SlackController extends Controller
 
     private function sanitizeAbsentProperty(&$object, $propertyName, $defaultValue=null)
     {
-        if (!isset($event->{$propertyName}))
+        if (!isset($object->{$propertyName}))
             $object->{$propertyName} = $defaultValue;
 
         return $object;
@@ -65,6 +65,7 @@ class SlackController extends Controller
             'message',
             'previous_message'
         ]);
+
         $this->sanitizeAbsentProperty($event, 'hidden', false);
 
         $slackEventData = [
@@ -80,6 +81,7 @@ class SlackController extends Controller
 
             'event_type' => $event->type,
             'event_subtype' => $event->subtype,
+
             'event_hidden' => $event->hidden,
             'event_text' => $event->text,
             'event_ts' => $event->ts,
