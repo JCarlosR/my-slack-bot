@@ -59,8 +59,9 @@ class SlackController extends Controller
 
         // sanitize no present properties
         $this->sanitizeAbsentProperties($event, [
+            'type', 'subtype',
             'text',
-            'bot_id',
+            'bot_id', 'channel_type',
             'message',
             'previous_message'
         ]);
@@ -99,15 +100,15 @@ class SlackController extends Controller
                 $messageAttachment = $event->message->attachments[0];
 
                 $this->sanitizeAbsentProperties($messageAttachment, [
-                   'text', 'footer', 'fields', 'actions'
+                   'fallback', 'text', 'title', 'title_link', 'footer', 'color', 'fields', 'actions'
                 ]);
 
                 $slackEventData += [
                     'message_attachment_fallback' => $messageAttachment->fallback,
                     'message_attachment_text' => $messageAttachment->text,
                     'message_attachment_title' => $messageAttachment->title,
-                    'message_attachment_footer' => $messageAttachment->footer,
                     'message_attachment_title_link' => $messageAttachment->title_link,
+                    'message_attachment_footer' => $messageAttachment->footer,
                     'message_attachment_color' => $messageAttachment->color,
                     'message_attachment_fields' => $messageAttachment->fields,
                     'message_attachment_actions' => $messageAttachment->actions
@@ -127,7 +128,7 @@ class SlackController extends Controller
                 $previousAttachment = $event->previous_message->attachments[0];
 
                 $this->sanitizeAbsentProperties($messageAttachment, [
-                    'author_name', 'text', 'fields', 'actions'
+                    'author_name', 'fallback', 'text', 'title', 'title_link', 'color', 'fields', 'actions'
                 ]);
 
                 $slackEventData += [
