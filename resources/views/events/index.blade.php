@@ -14,13 +14,12 @@
                         <thead>
                         <tr>
                             <th>ID</th>
-                            {{--<th>Type</th>--}}
-                            {{--<th>Event Type</th>--}}
                             <th>Event SubType</th>
                             <th>Event Ts</th>
                             <th>Channel</th>
-                            <th>Event Message SubType</th>
-                            <th>Previous Message SubType</th>
+                            <th title="Event > Attachments[0]">Attachment</th>
+                            <th title="Message SubType">Event > Message</th>
+                            <th title="Previous Message SubType">Event > Previous</th>
                             <th>Created At</th>
                             <th>Options</th>
                         </tr>
@@ -29,38 +28,66 @@
                         @foreach ($rows as $row)
                             <tr>
                                 <td>{{ $row->id }}</td>
-                                {{--<td>{{ $row->type }}</td>--}}
-                                {{--<td>{{ $row->event_type }}</td>--}}
                                 <td>{{ $row->event_subtype }}</td>
                                 <td>{{ $row->event_ts }}</td>
                                 <td title="Channel Type: {{ $row->event_channel_type }}">
                                     {{ $row->event_channel }}
                                 </td>
+                                @if ($row->attachment_fallback)
+                                    <td>
+                                        <button class="btn btn-outline-info" data-toggle="collapse" data-target="#attachment-{{ $row->id }}">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </td>
+                                @else
+                                    <td>-</td>
+                                @endif
                                 @if ($row->event_message_type)
-                                    <td data-toggle="collapse" data-target="#event-message-{{ $row->id }}">
-                                        {{ $row->event_message_subtype }}
+                                    <td>
+                                        <a href="#" data-toggle="collapse" data-target="#event-message-{{ $row->id }}">
+                                            {{ $row->event_message_subtype }}
+                                        </a>
                                     </td>
                                 @else
                                     <td>-</td>
                                 @endif
                                 @if ($row->previous_message_type)
-                                    <td data-toggle="collapse" data-target="#event-previous-{{ $row->id }}">
-                                        {{ $row->previous_message_subtype }}
+                                    <td>
+                                        <a href="#" data-toggle="collapse" data-target="#event-previous-{{ $row->id }}">
+                                            {{ $row->previous_message_subtype }}
+                                        </a>
                                     </td>
                                 @else
                                     <td>-</td>
                                 @endif
                                 <td>{{ $row->created_at }}</td>
                                 <td>
-                                    <a href="{{ url('events/'.$row->id) }}" class="btn btn-primary">
-                                        <i class="fa fa-eye"></i>
+                                    <a href="{{ url('events/'.$row->id) }}" class="btn btn-primary" target="_blank">
+                                        <i class="fa fa-external-link"></i>
                                     </a>
                                 </td>
                             </tr>
+                            @if ($row->attachment_fallback)
+                                <tr id="attachment-{{ $row->id }}" class="collapse">
+                                    <td colspan="9">
+                                        <p><strong>Event > Attachments[0]</strong></p>
+                                        <ul>
+                                            <li><strong>Fallback:</strong> {{ $row->attachment_fallback }}</li>
+                                            <li><strong>Text:</strong> {{ $row->attachment_text }}</li>
+                                            <li>
+                                                <strong>Color:</strong>
+                                                <span style="color: '#{{ $row->attachment_color }}';">
+                                                {{ $row->attachment_color }}
+                                            </span>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            @endif
                             @if ($row->event_message_type)
                             <tr id="event-message-{{ $row->id }}" class="collapse">
                                 <td colspan="9">
-                                    <p><strong>Event Message</strong></p>
+                                    <p><strong>Event > Message</strong></p>
                                     <ul>
                                         <li><strong>Type:</strong> {{ $row->event_message_type }}</li>
                                         <li><strong>SubType:</strong> {{ $row->event_message_subtype }}</li>
@@ -68,7 +95,7 @@
                                         <li><strong>Bot Id:</strong> {{ $row->event_message_bot_id }}</li>
                                     </ul>
 
-                                    <p><strong>Attachment</strong></p>
+                                    <p><strong>Message > Attachment</strong></p>
                                     <ul>
                                         <li><strong>Fallback:</strong> {{ $row->message_attachment_fallback }}</li>
                                         <li><strong>Text:</strong> {{ $row->message_attachment_text }}</li>
@@ -88,7 +115,7 @@
                             @if ($row->previous_message_type)
                             <tr id="event-previous-{{ $row->id }}" class="collapse">
                                 <td colspan="9">
-                                    <p><strong>Event Previous Message</strong></p>
+                                    <p><strong>Event > Previous Message</strong></p>
                                     <ul>
                                         <li><strong>Type:</strong> {{ $row->previous_message_type }}</li>
                                         <li><strong>SubType:</strong> {{ $row->previous_message_subtype }}</li>
@@ -96,7 +123,7 @@
                                         <li><strong>Bot Id:</strong> {{ $row->previous_message_bot_id }}</li>
                                     </ul>
 
-                                    <p><strong>Attachment</strong></p>
+                                    <p><strong>Previous Message > Attachment</strong></p>
                                     <ul>
                                         <li><strong>Author Name:</strong> {{ $row->previous_attachment_author_name }}</li>
                                         <li><strong>Fallback:</strong> {{ $row->previous_attachment_fallback }}</li>

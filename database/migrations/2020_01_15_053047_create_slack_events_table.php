@@ -35,6 +35,12 @@ class CreateSlackEventsTable extends Migration
             $table->string('event_channel')->nullable();
             $table->string('event_channel_type')->nullable();
 
+            // event -> attachments[0]
+
+            $table->text('attachment_fallback');
+            $table->text('attachment_text');
+            $table->string('attachment_color');
+
             // event -> message
 
             $table->string('event_message_type')->nullable();
