@@ -27,6 +27,12 @@ class SlackEvent extends Model
         'event_channel',
         'event_channel_type',
 
+    // event -> attachments[0]
+
+        'attachment_fallback',
+        'attachment_text',
+        'attachment_color',
+
     // event -> message
 
         'event_message_type',
