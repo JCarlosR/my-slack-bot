@@ -90,6 +90,16 @@ class SlackController extends Controller
             'event_channel_type' => $event->channel_type
         ];
 
+        if (isset($event->attachments[0])) {
+            $eventAttachment = $event->attachments[0];
+
+            $slackEventData += [
+                'attachment_fallback' => $eventAttachment->fallback,
+                'attachment_text' => $eventAttachment->text,
+                'attachment_color' => $eventAttachment->color
+            ];
+        }
+
         if ($event->message) {
             $slackEventData += [
                 'event_message_type' => $event->message->type,
