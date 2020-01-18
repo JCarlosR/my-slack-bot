@@ -129,7 +129,7 @@ class SlackController extends Controller
             if (isset($event->previous_message->attachments[0])) {
                 $previousAttachment = $event->previous_message->attachments[0];
 
-                $this->sanitizeAbsentProperties($messageAttachment, [
+                $this->sanitizeAbsentProperties($previousAttachment, [
                     'author_name', 'fallback', 'text', 'title', 'title_link', 'color', 'fields', 'actions'
                 ]);
 
