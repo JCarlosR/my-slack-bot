@@ -27,7 +27,8 @@ class SlackMessageController extends Controller
             $request->input('text')
         );
 
-        dd((string) $response->getBody());
+        $status = (string) $response->getBody();
+        return back()->with(compact('status'));
     }
 
     public function newCommand()
@@ -43,6 +44,7 @@ class SlackMessageController extends Controller
             $request->input('text')
         );
 
-        dd((string) $response->getBody());
+        $status = (string) $response->getBody();
+        return back()->with(compact('status'));
     }
 }

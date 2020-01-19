@@ -37,8 +37,10 @@ class CreateSlackEventsTable extends Migration
 
             // event -> attachments[0]
 
+            $table->text('attachment_author_name')->nullable();
             $table->text('attachment_fallback')->nullable();
             $table->text('attachment_text')->nullable();
+            $table->text('attachment_title')->nullable();
             $table->string('attachment_color')->nullable();
 
             // event -> message

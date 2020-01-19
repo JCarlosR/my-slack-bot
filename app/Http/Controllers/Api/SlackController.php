@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Slack\ApiClient;
 use App\SlackEvent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SlackController extends Controller
 {
-
 
     public function action(Request $request)
     {
@@ -22,8 +22,9 @@ class SlackController extends Controller
         $slackEvent = $this->storeSlackEvent($requestContent, $contentData);
 
         // acknowledge OpsGenie ticket when appropriate
-        if (env('ACK_OG_TICKETS', false) && $slackEvent)
-            $this->ackTicket($slackEvent);
+        if (env('ACK_OG_TICKETS', false) && $ticketNumber = $this->iWantToAck($slackEvent)) {
+            return $this->ackTicket($slackEvent->event_channel, $ticketNumber);
+        }
 
         return $request->input('challenge');
     }
@@ -93,9 +94,15 @@ class SlackController extends Controller
         if (isset($event->attachments[0])) {
             $eventAttachment = $event->attachments[0];
 
+            $this->sanitizeAbsentProperties($eventAttachment, [
+                'author_name', 'fallback', 'text', 'title', 'color'
+            ]);
+
             $slackEventData += [
+                'attachment_author_name' => $eventAttachment->author_name,
                 'attachment_fallback' => $eventAttachment->fallback,
                 'attachment_text' => $eventAttachment->text,
+                'attachment_title' => $eventAttachment->title,
                 'attachment_color' => $eventAttachment->color
             ];
         }
@@ -159,17 +166,36 @@ class SlackController extends Controller
         return SlackEvent::create($slackEventData);
     }
 
-    private function ackTicket(SlackEvent $slackEvent)
+    private function ackTicket($channel, $ticketNumber)
     {
-        if ($slackEvent->event_subtype === 'bot_message') {
-            $ticketNumber = $slackEvent->getOpsGenieTicketNumber();
+        $slackApiClient = new ApiClient();
 
-            $slackApiClient = new ApiClient();
-            $slackApiClient->postCommand(
-                $slackEvent->event_channel,
-                '/genie',
-                "ack $ticketNumber"
-            );
+        $response = $slackApiClient->postCommand(
+            $channel,
+            '/genie',
+            "ack $ticketNumber"
+        );
+
+        return (string) $response->getBody();
+    }
+
+    private function iWantToAck(SlackEvent $slackEvent)
+    {
+        $isNewTicket = $slackEvent->event_subtype === 'bot_message'
+            && $slackEvent->event_channel === env('TARGET_CHANNEL_ID')
+            && $slackEvent->attachment_author_name === 'New Alert created via Zendesk';
+
+        if (!$isNewTicket)
+            return null;
+
+        $containsKeywords = Str::contains($slackEvent->attachment_title, [
+            'LCA SVS Redwings'
+        ]);
+
+        if ($containsKeywords) {
+            return $slackEvent->getOpsGenieTicketNumber();
         }
+
+        return null;
     }
 }

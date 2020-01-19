@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 class RouteServiceProvider extends ServiceProvider
 {
     protected $namespace = 'App\Http\Controllers';
+    protected $namespaceApi = 'App\Http\Controllers\Api';
 
     public const HOME = '/home';
     public const LOGS = '/logs';
@@ -63,7 +64,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::prefix('api')
              ->middleware('api')
-             ->namespace($this->namespace)
+             ->namespace($this->namespaceApi)
              ->group(base_path('routes/api.php'));
     }
 }

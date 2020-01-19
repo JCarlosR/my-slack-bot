@@ -29,8 +29,10 @@ class SlackEvent extends Model
 
     // event -> attachments[0]
 
+        'attachment_author_name',
         'attachment_fallback',
         'attachment_text',
+        'attachment_title',
         'attachment_color',
 
     // event -> message
@@ -80,6 +82,13 @@ class SlackEvent extends Model
 
     public function getOpsGenieTicketNumber()
     {
+        // $str = '#3925: [Zendesk] New ticket: \"Call - 539 ABC Stadium - issue scanning items\"';
+        $regExPattern = '/#(.*?): \[Zendesk\] New ticket/';
+
+        if (preg_match($regExPattern, $this->attachment_title, $match)  === 1) {
+            return $match[1];
+        }
+
         return null;
     }
 }
