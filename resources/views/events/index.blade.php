@@ -7,6 +7,43 @@
             <div class="card-header">Slack Events</div>
 
             <div class="card-body">
+                <form class="form-inline" method="get">
+                    <select name="event_subtype" class="form-control">
+                        <option value="">All Event SubTypes</option>
+                        <option value="message_changed" @if ($eventSubType === 'message_changed') selected @endif>
+                            message_changed
+                        </option>
+                        <option value="bot_message" @if ($eventSubType === 'bot_message') selected @endif>
+                            bot_message
+                        </option>
+                    </select>
+
+                    <select name="event_channel" class="form-control">
+                        <option value="">All Channels</option>
+                        <option value="{{ env('TARGET_CHANNEL_ID') }}" @if ($channel === env('TARGET_CHANNEL_ID')) selected @endif>
+                            {{ env('TARGET_CHANNEL_ID') }}
+                        </option>
+                        <option value="{{ env('IM_CHANNEL_ID') }}" @if ($channel === env('IM_CHANNEL_ID')) selected @endif>
+                            {{ env('IM_CHANNEL_ID') }}
+                        </option>
+                    </select>
+
+                    <select name="json_structure" class="form-control">
+                        <option value="">Any JSON Structure</option>
+                        <option value="event_attachment" @if ($jsonStructure === 'event_attachment') selected @endif>
+                            Has Event > Attachments[0]
+                        </option>
+                        <option value="event_message" @if ($jsonStructure === 'event_message') selected @endif>
+                            Has Event > Message
+                        </option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+
+
                 <p>Total captured events: {{ $rows->total() }}</p>
 
                 <div class="table-responsive">
