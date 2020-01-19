@@ -108,16 +108,20 @@ class SlackController extends Controller
             ];
         }
 
-        if ($event->message) {
+        if ($eventMessage = $event->message) {
+            $this->sanitizeAbsentProperties($eventMessage, [
+                'type', 'subtype', 'username', 'bot_id'
+            ]);
+
             $slackEventData += [
-                'event_message_type' => $event->message->type,
-                'event_message_subtype' => $event->message->subtype,
-                'event_message_username' => $event->message->username,
-                'event_message_bot_id' => $event->message->bot_id
+                'event_message_type' => $eventMessage->type,
+                'event_message_subtype' => $eventMessage->subtype,
+                'event_message_username' => $eventMessage->username,
+                'event_message_bot_id' => $eventMessage->bot_id
             ];
 
-            if (isset($event->message->attachments[0])) {
-                $messageAttachment = $event->message->attachments[0];
+            if (isset($eventMessage->attachments[0])) {
+                $messageAttachment = $eventMessage->attachments[0];
 
                 $this->sanitizeAbsentProperties($messageAttachment, [
                    'fallback', 'text', 'title', 'title_link', 'footer', 'color', 'fields', 'actions'
@@ -136,16 +140,20 @@ class SlackController extends Controller
             }
         }
 
-        if ($event->previous_message) {
+        if ($prevMessage = $event->previous_message) {
+            $this->sanitizeAbsentProperties($prevMessage, [
+                'type', 'subtype', 'username', 'bot_id'
+            ]);
+
             $slackEventData += [
-                'previous_message_type' => $event->previous_message->type,
-                'previous_message_subtype' => $event->previous_message->subtype,
-                'previous_message_username' => $event->previous_message->username,
-                'previous_message_bot_id' => $event->previous_message->bot_id,
+                'previous_message_type' => $prevMessage->type,
+                'previous_message_subtype' => $prevMessage->subtype,
+                'previous_message_username' => $prevMessage->username,
+                'previous_message_bot_id' => $prevMessage->bot_id,
             ];
 
-            if (isset($event->previous_message->attachments[0])) {
-                $previousAttachment = $event->previous_message->attachments[0];
+            if (isset($prevMessage->attachments[0])) {
+                $previousAttachment = $prevMessage->attachments[0];
 
                 $this->sanitizeAbsentProperties($previousAttachment, [
                     'author_name', 'fallback', 'text', 'title', 'title_link', 'color', 'fields', 'actions'
