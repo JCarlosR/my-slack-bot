@@ -109,8 +109,10 @@
                                     <td colspan="9">
                                         <p><strong>Event > Attachments[0]</strong></p>
                                         <ul>
+                                            <li><strong>Author Name:</strong> {{ $row->attachment_author_name }}</li>
                                             <li><strong>Fallback:</strong> {{ $row->attachment_fallback }}</li>
                                             <li><strong>Text:</strong> {{ $row->attachment_text }}</li>
+                                            <li><strong>Title:</strong> {{ $row->attachment_title }}</li>
                                             <li>
                                                 <strong>Color:</strong>
                                                 <span style="color: '#{{ $row->attachment_color }}';">
