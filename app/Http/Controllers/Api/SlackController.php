@@ -23,7 +23,7 @@ class SlackController extends Controller
         $slackEvent = $this->storeSlackEvent($requestContent, $contentData);
 
         // acknowledge OpsGenie ticket when appropriate
-        if (env('ACK_OG_TICKETS', false) && $ticketNumber = $this->iWantToAck($slackEvent)) {
+        if (env('ACK_OG_TICKETS', false) && $slackEvent && $ticketNumber = $this->iWantToAck($slackEvent)) {
             return $this->ackTicket($slackEvent->event_channel, $ticketNumber);
         }
 
