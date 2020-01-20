@@ -50,7 +50,7 @@ class CreateSlackEventsTable extends Migration
             $table->string('event_message_username')->nullable();
             $table->string('event_message_bot_id')->nullable();
 
-            $table->string('message_attachment_fallback')->nullable();
+            $table->text('message_attachment_fallback')->nullable();
             $table->text('message_attachment_text')->nullable();
             $table->string('message_attachment_title')->nullable();
             $table->string('message_attachment_footer')->nullable();
@@ -67,7 +67,7 @@ class CreateSlackEventsTable extends Migration
             $table->string('previous_message_bot_id')->nullable();
 
             $table->string('previous_attachment_author_name')->nullable();
-            $table->string('previous_attachment_fallback')->nullable();
+            $table->text('previous_attachment_fallback')->nullable();
             $table->text('previous_attachment_text')->nullable();
             $table->string('previous_attachment_title')->nullable();
             $table->string('previous_attachment_title_link')->nullable();
