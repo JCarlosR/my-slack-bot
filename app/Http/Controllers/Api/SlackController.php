@@ -197,11 +197,19 @@ class SlackController extends Controller
         if (!$isNewTicket)
             return null;
 
-        $containsKeywords = Str::contains($slackEvent->attachment_title, [
-            'LCA SVS Redwings'
-        ]);
+        // ticket title & description
+        $title = $slackEvent->attachment_title;
+        $description = $slackEvent->attachment_text;
 
-        if ($containsKeywords) {
+        $interestedIn = [
+            Str::contains($title, 'SVS') && Str::contains($title, ['Pistons', 'Redwings']),
+
+            Str::containsAll($description, ['api', 'key'])
+            && Str::contains($description, ['api_user_venues', 'api_user_id'])
+            && Str::contains($description, ['add', 'insert'])
+        ];
+
+        if (in_array($interestedIn, true)) {
             return $slackEvent->getOpsGenieTicketNumber();
         }
 
