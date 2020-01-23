@@ -209,7 +209,7 @@ class SlackController extends Controller
             && Str::contains($description, ['add', 'insert'])
         ];
 
-        if (in_array($interestedIn, true)) {
+        if (in_array(true, $interestedIn)) {
             return $slackEvent->getOpsGenieTicketNumber();
         }
 
